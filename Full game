@@ -1,0 +1,276 @@
+#importing tkinter
+from tkinter import *
+import random
+import time
+
+
+window = Tk() #created a tkinter window
+window.geometry("500x500+300+300") #width x height +xshift +yshift
+window.title("Final game project window")
+
+
+
+#making a canvas to put images on
+playground = Canvas(window, width=500, height=500, bg="green")
+playground.pack(expand=YES, fill="both")
+
+
+fbfield=PhotoImage(file="fbfield2.png")
+field=playground.create_image(250, 250, image=fbfield)
+
+
+#making an image and placing it on the canvas
+path=PhotoImage(file="fb.gif")
+football=playground.create_image(250, 450, image=path)
+
+score = 0
+
+count = 3
+
+
+
+#this moves the image
+def moveleft(*args):
+    playground.move(football, -25, 0)
+
+def moveright(*args):
+    playground.move(football, 25, 0)
+
+def start():
+    global countlabel, count, startbutton
+    startbutton.destroy()
+    window.update()
+    for i in range(3):
+        countlabel.config(text=count)
+        window.update()
+        count -= (1)
+        time.sleep(1)
+    countlabel.config(text="go")
+    window.update()
+    time.sleep(1)
+    countlabel.destroy()
+    defense()
+
+
+
+def defense():
+    global playground
+    global defenders
+    defenders=PhotoImage(file="defender1.gif")
+    defenders_img = defenders
+    global d
+    d = playground.create_image(playground.bbox(football)[0] + random.randint(-20,75), 30, image=defenders)
+    defensemove()
+
+def defense2():
+    global playground
+    global defenders
+    defenders=PhotoImage(file="defender1.gif")
+    defenders_img = defenders
+    global d
+    d = playground.create_image(playground.bbox(football)[0] + random.randint(-20,75), 30, image=defenders)
+    defensemove2()
+
+def defense3():
+    global playground
+    global defenders
+    defenders=PhotoImage(file="defender1.gif")
+    defenders_img = defenders
+    global d
+    d = playground.create_image(playground.bbox(football)[0] + random.randint(-20,75), 30, image=defenders)
+    defensemove3()
+
+def defense4():
+    global playground
+    global defenders
+    defenders=PhotoImage(file="defender1.gif")
+    defenders_img = defenders
+    global d
+    d = playground.create_image(playground.bbox(football)[0] + random.randint(-20,75), 30, image=defenders)
+    defensemove4()
+
+def defense5():
+    global playground
+    global defenders
+    defenders=PhotoImage(file="defender1.gif")
+    defenders_img = defenders
+    global d
+    d = playground.create_image(playground.bbox(football)[0] + random.randint(-20,75), 30, image=defenders)
+    defensemove5()
+
+def defensemove():
+    global d, score
+    playground.move(d, 0, 5)
+    boundarybox()
+    a = playground.bbox(d)
+    try:
+        if a[3] < 500:
+            window.after(4, lambda: defensemove())
+        elif score == 5:
+            defensemove2()
+        else:
+            score += 1
+            infolabel.config(text=score)
+            window.update()
+            defense()
+    except:
+        pass
+
+def defensemove2():
+    global d, score
+    playground.move(d, 0, 6)
+    boundarybox()
+    a = playground.bbox(d)
+    try:
+        if a[3] < 500:
+            window.after(1, lambda: defensemove2())
+        elif score == 10:
+            defensemove3()
+        else:
+            score += 1
+            infolabel.config(text=score)
+            window.update()
+            defense2()
+    except:
+        pass
+
+def defensemove3():
+    global d, score
+    playground.move(d, 0, 7)
+    boundarybox()
+    a = playground.bbox(d)
+    try:
+        if a[3] < 500:
+            window.after(1, lambda: defensemove3())
+        elif score == 15:
+            defensemove4()
+        else:
+            score += 1
+            infolabel.config(text=score)
+            window.update()
+            defense3()
+    except:
+        pass
+
+def defensemove4():
+    global d, score
+    playground.move(d, 0, 8)
+    boundarybox()
+    a = playground.bbox(d)
+    try:
+        if a[3] < 500:
+            window.after(1, lambda: defensemove4())
+        elif score == 20:
+            defensemove5()
+        else:
+            score += 1
+            infolabel.config(text=score)
+            window.update()
+            defense4()
+    except:
+        pass
+
+def defensemove5():
+    global d, score
+    playground.move(d, 0, 9)
+    boundarybox()
+    a = playground.bbox(d)
+    try:
+        if a[3] < 500:
+            window.after(1, lambda: defensemove5())
+        else:
+            score += 1
+            infolabel.config(text=score)
+            window.update()
+            defense5()
+    except:
+        pass
+
+#getting each pics location
+def boundarybox():
+    ball = playground.bbox(football)
+    fbx1 = ball[0] - 50
+    fby1 = ball[1] - 50
+    fbx2 = ball[2] - 50
+    fby2 = ball[3] - 50
+
+    ball2 = playground.bbox(d)
+    fb2x1 = ball2[0] - 50
+    fb2y1 = ball2[1] - 50
+    fb2x2 = ball2[2] - 50
+    fb2y2 = ball2[3] - 50
+
+    if fbx1 <= fb2x1 <=fbx2 and fby1 <= fb2y1 <=fby2:
+        lose()
+    elif fbx2 <= fb2x2 <=fbx1 and fby2 <=fb2y2 <=fby1:
+        lose()
+    elif fb2x1 <= fbx1 <=fb2x2 and fb2y1 <= fby1 <=fb2y2:
+        lose()
+    else:
+        pass
+
+def lose():
+    global d
+    global loselabel, restartbutton
+    playground.delete(d)
+    loselabel = Label(window, text="", bg="green", fg="red")
+    loselabel.place(x=5, y=5)
+    loselabel.config(text="Your score was " + str(score), height=35, width=55, bg="white", fg="green")
+    print("You lose")
+    restartbutton = Button(window, text="Restart", command=restart)
+    restartbutton.place(x=250, y=250)
+    window.update()
+
+def restart():
+    global count, score, loselabel, restartbutton
+    count = 3
+    score = 0
+
+    try:
+        loselabel.destroy()
+        restartbutton.destroy()
+        global countlabel
+        countlabel = Label(window, text="", bg="green", fg="red")
+        countlabel.place(x=200, y=250)
+        global startbutton
+        startbutton = Button(window, text="Start", command=start)
+        startbutton.place(x=250, y=250)
+    except:
+        pass
+
+
+
+
+
+
+
+startbutton = Button(window, text="Start", command=start)
+startbutton.place(x=250, y=250)
+
+#putting a label on the window
+infolabel = Label(window, text=score, bg="green", fg="red")
+infolabel.place(x=240, y=25)
+
+loselabel = Label(window, text="", bg="green", fg="red")
+loselabel.place(x=5, y=5)
+
+restartbutton = Button(window, text="Restart", command=restart)
+
+global countlabel
+countlabel = Label(window, text="", bg="green", fg="red")
+countlabel.place(x=200, y=250)
+
+#binding key press to movement
+# playground.bind_all("a", moveleft)
+# playground.bind_all("d", moveright)
+
+playground.bind_all("<Left>", moveleft)
+playground.bind_all("<Right>", moveright)
+
+
+
+
+
+window.mainloop()
+
+
